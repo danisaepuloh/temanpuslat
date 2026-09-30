@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Scientific Paper Generator</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans">
+
+    <!-- Navbar -->
+    <nav class="bg-indigo-900 text-white p-4 shadow-md sticky top-0 z-50">
+        <div class="container mx-auto flex justify-between items-center">
+            <h1 class="text-xl font-bold">SciPaper AI Studio</h1>
+            <div class="space-x-4">
+                <button onclick="switchPage('landing')" class="hover:text-indigo-300">Home</button>
+                <button onclick="switchPage('user')" class="hover:text-indigo-300">Generator</button>
+                <button onclick="switchPage('admin')" class="hover:text-indigo-300">Admin Panel</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <main class="container mx-auto p-4 md:p-8">
+
+        <!-- 1. LANDING PAGE -->
+        <section id="page-landing" class="page-section py-12 text-center">
+            <h2 class="text-4xl font-extrabold text-indigo-900 mb-4">Platform Pembuat Karya Tulis Ilmiah Otomatis</h2>
+            <p class="text-lg text-slate-600 max-w-2xl mx-auto mb-8">Buat artikel jurnal berstandar internasional (Scopus/SINTA) secara instan menggunakan kecerdasan buatan dengan struktur IMRAD yang ketat.</p>
+            <button onclick="switchPage('user')" class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-6 py-3 rounded-lg shadow-lg transition">Mulai Buat Artikel</button>
+        </section>
+
+        <!-- 2. USER DASHBOARD / GENERATOR -->
+        <section id="page-user" class="page-section hidden max-w-3xl mx-auto bg-white p-6 rounded-xl shadow-md">
+            <h3 class="text-2xl font-bold text-indigo-900 mb-4">Generator Artikel Jurnal</h3>
+            <div class="space-y-4">
+                <div>
+                    <label class="block font-medium mb-1">Tema / Judul Penelitian:</label>
+                    <input type="text" id="themeInput" class="w-full border rounded-lg p-3 focus:ring-2 focus:ring-indigo-500" placeholder="Contoh: Integrasi Artificial Intelligence dalam Pembelajaran Daring">
+                </div>
+                <div>
+                    <label class="block font-medium mb-1">Bidang Ilmu:</label>
+                    <input type="text" id="fieldInput" class="w-full border rounded-lg p-3" value="Pendidikan dan Teknologi">
+                </div>
+                <div>
+                    <label class="block font-medium mb-1">Target Jurnal:</label>
+                    <input type="text" id="targetInput" class="w-full border rounded-lg p-3" value="Jurnal Q2 Scopus">
+                </div>
+                <button onclick="generateArticle()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 rounded-lg transition">Generate Artikel IMRAD</button>
+            </div>
+
+            <!-- Loading Spinner -->
+            <div id="loading" class="hidden text-center py-6">
+                <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 mx-auto mb-2"></div>
+                <p class="text-slate-500">Prof. Dr. sedang menyusun artikel ilmiah Anda...</p>
+            </div>
+
+            <!-- Hasil Output -->
+            <div id="resultContainer" class="mt-6 hidden">
+                <h4 class="font-bold text-lg text-indigo-900 mb-2">Hasil Karya Tulis Ilmiah:</h4>
+                <textarea id="outputResult" class="w-full h-96 border rounded-lg p-4 font-mono text-sm bg-slate-50" readonly></textarea>
+            </div>
+        </section>
+
+        <!-- 3. ADMIN PANEL -->
+        <section id="page-admin" class="page-section hidden max-w-4xl mx-auto bg-white p-6 rounded-xl shadow-md">
+            <h3 class="text-2xl font-bold text-indigo-900 mb-4">Admin Panel - Manajemen Sistem</h3>
+            <p class="text-slate-600 mb-4">Kelola konfigurasi API Gemini, database Google Sheets, dan monitoring pengguna.</p>
+            <div class="border p-4 rounded-lg bg-slate-50">
+                <p class="font-semibold text-green-700">Status Sistem: <span class="text-slate-700">Terhubung ke Google Cloud & GitHub Frontend</span></p>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Script Integrasi -->
+    <script>
+        function switchPage(pageId) {
+            document.querySelectorAll('.page-section').forEach(el => el.classList.add('hidden'));
+            document.getElementById('page-' + pageId).classList.remove('hidden');
+        }
+
+        function generateArticle() {
+            const theme = document.getElementById('themeInput').value;
+            const field = document.getElementById('fieldInput').value;
+            const targetJournal = document.getElementById('targetInput').value;
+
+            if (!theme) {
+                alert('Mohon masukkan tema atau judul penelitian terlebih dahulu!');
+                return;
+            }
+
+            document.getElementById('loading').classList.remove('hidden');
+            document.getElementById('resultContainer').classList.add('hidden');
+
+            // Komunikasi Asynchronous menggunakan google.script.run (jika dideploy di GAS) 
+            // Atau ganti dengan fetch endpoint Web App GAS Anda.
+            google.script.run
+                .withSuccessHandler(function(response) {
+                    document.getElementById('loading').classList.add('hidden');
+                    if(response.status === 'success') {
+                        document.getElementById('resultContainer').classList.remove('hidden');
+                        document.getElementById('outputResult').value = response.data;
+                    } else {
+                        alert('Error: ' + response.message);
+                    }
+                })
+                .withFailureHandler(function(error) {
+                    document.getElementById('loading').classList.add('hidden');
+                    alert('Terjadi kesalahan koneksi: ' + error);
+                })
+                .generateScientificPaper({ theme: theme, field: field, targetJournal: targetJournal });
+        }
+    </script>
+</body>
+</html>
