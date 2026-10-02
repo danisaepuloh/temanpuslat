@@ -36,6 +36,10 @@ textarea{height:460px;font-family:ui-monospace,Menlo,monospace;font-size:12px;re
 table{width:100%;border-collapse:collapse;font-size:12px}th,td{text-align:left;padding:10px;border-bottom:1px solid var(--line)}th{background:#F1F5F9;text-transform:uppercase;font-size:11px}
 .hide{display:none!important}.center{text-align:center;padding:60px 16px}
 footer{text-align:center;color:var(--mut);font-size:12px;padding:24px}
+.hero{background:linear-gradient(135deg,#0B2545,#134074 60%,#0077B6);color:#fff;border-radius:24px;padding:44px 24px;text-align:center}.hero h1{margin:0 0 10px;font-size:30px;line-height:1.2}.hero p{color:#BAE6FD;max-width:640px;margin:0 auto 22px}
+.bar{height:12px;background:#E2E8F0;border-radius:99px;overflow:hidden;margin-top:14px}.bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,#00B4D8,#134074);transition:width .8s}
+.btn.d{background:#FEE2E2;color:#991B1B}.btn.g{background:#DCFCE7;color:#166534}
+.list{list-style:none;padding:0;margin:0}.list li{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;padding:10px 0;border-bottom:1px solid var(--line);font-size:13px}
 </style>
 </head>
 <body>
@@ -45,7 +49,9 @@ footer{text-align:center;color:var(--mut);font-size:12px;padding:24px}
     <div><b>PUSLATKP</b><small>BPPSDM - Kementerian Kelautan &amp; Perikanan</small></div>
   </div>
   <div class="menu hide" id="menu">
-    <button data-v="gen" class="on">Generator Naskah</button>
+    <button data-v="home" class="on">Beranda</button>
+    <button data-v="gen">Generator</button>
+    <button data-v="hist">Riwayat</button>
     <button data-v="kmap">Knowledge Map</button>
     <button data-v="admin" id="adminBtn" class="hide">Admin</button>
     <span class="who" id="who"></span>
@@ -53,9 +59,25 @@ footer{text-align:center;color:var(--mut);font-size:12px;padding:24px}
 </nav>
 
 <main>
-  <div id="login" class="card center"><h2>Masuk</h2><p class="sub">Gunakan akun Google yang sudah didaftarkan admin.</p><div id="gbtn" style="display:inline-block"></div></div>
   <div id="boot" class="center hide">Memverifikasi akun Anda...</div>
   <div id="denied" class="card center hide"><h2>Akses Ditolak</h2><p class="sub" id="deniedMsg"></p><button class="btn s" onclick="location.reload()">Masuk ulang</button></div>
+
+  <section id="v-home">
+    <div class="hero"><h1>Ubah Pengalaman Lapangan Menjadi Naskah Jurnal Ilmiah</h1>
+      <p>Asisten penulisan berbasis AI untuk pegawai Kementerian Kelautan dan Perikanan: struktur IMRAD, sitasi dan referensi APA 7th, siap diekspor ke Word atau PDF.</p>
+      <div id="loginBox"><div id="gbtn" style="display:inline-block"></div><p style="margin-top:12px;font-size:12px">Masuk dengan akun Google. Akun baru perlu persetujuan admin.</p></div>
+      <button class="btn s hide" id="startBtn">Mulai Buat Naskah</button></div>
+    <div class="g3" style="margin-top:20px">
+      <div class="card"><h3>Struktur IMRAD</h3><p class="sub">Title, Abstract, Introduction, Methods, Results, Discussion, Conclusion, References.</p></div>
+      <div class="card"><h3>Referensi APA 7th</h3><p class="sub">Minimal 20 referensi, mengutamakan jurnal Scopus Q1/Q2. Wajib diverifikasi sebelum dipakai.</p></div>
+      <div class="card"><h3>Ekspor &amp; Riwayat</h3><p class="sub">Unduh Word atau PDF, dan buka kembali naskah lama dari riwayat akun Anda.</p></div>
+    </div>
+    <div class="card" style="margin-top:20px"><h3>Cara pakai</h3><ol class="sub"><li>Masuk dengan akun Google dan daftar.</li><li>Tunggu persetujuan admin.</li><li>Isi tema, bidang, target jurnal, lalu Generate.</li><li>Periksa, verifikasi referensi, dan ekspor.</li></ol></div>
+  </section>
+
+  <div id="v-reg" class="card center hide"><h2>Daftar Akun</h2><p class="sub">Email Anda: <b id="regMail"></b>. Setelah mendaftar, status akun <b>menunggu persetujuan admin</b>.</p>
+    <input id="regName" maxlength="80" placeholder="Nama lengkap dan unit kerja" style="max-width:380px"><div id="regMsg"></div><button class="btn s" id="regBtn" style="margin-top:12px">Daftar</button></div>
+  <div id="v-pend" class="card center hide"><h2>Menunggu Persetujuan</h2><p class="sub">Pendaftaran Anda sudah diterima. Akun akan aktif setelah disetujui admin. Silakan coba masuk lagi nanti.</p><button class="btn s" onclick="location.reload()">Muat ulang</button></div>
 
   <section id="v-gen" class="grid g2 hide">
     <div class="card">
@@ -67,23 +89,29 @@ footer{text-align:center;color:var(--mut);font-size:12px;padding:24px}
       <label for="lang">Bahasa</label><select id="lang"></select>
       <button class="btn" id="genBtn">Generate Naskah IMRAD</button>
       <div id="genMsg"></div>
+      <div id="prog" class="hide"><div class="bar"><i id="barFill"></i></div><small id="progTxt" style="color:var(--mut)"></small></div>
     </div>
     <div class="card">
       <div class="row"><b>Hasil Naskah</b>
-        <span><button class="btn s" id="copyBtn">Salin</button> <button class="btn s" id="dlBtn">.MD</button></span></div>
+        <span><button class="btn s" id="copyBtn">Salin</button> <button class="btn s" id="dlBtn">.MD</button> <button class="btn s" id="docBtn">Word</button> <button class="btn s" id="pdfBtn">PDF</button></span></div>
       <textarea id="out" readonly placeholder="Naskah akan tampil di sini."></textarea>
       <div class="msg warn">Naskah dibuat AI. Verifikasi seluruh data dan referensi sebelum dipublikasikan.</div>
     </div>
   </section>
+
+  <section id="v-hist" class="card hide"><h2>Riwayat Naskah</h2><p class="sub">30 naskah terakhir milik akun Anda.</p><ul class="list" id="histList"></ul></section>
 
   <section id="v-kmap" class="hide">
     <h2>Knowledge Map Kepakaran KP</h2><p class="sub">Data dikelola admin melalui sheet "Knowledge".</p>
     <div class="g3" id="kmapList"></div>
   </section>
 
-  <section id="v-admin" class="card hide">
-    <h2>Admin Panel</h2><p class="sub" id="adminStat"></p>
-    <div style="overflow-x:auto"><table><thead><tr><th>Waktu</th><th>Pengguna</th><th>Tema</th><th>Status</th></tr></thead><tbody id="logBody"></tbody></table></div>
+  <section id="v-admin" class="hide">
+    <div class="card"><h2>Manajemen User</h2><p class="sub">User dengan status "menunggu" tampil paling atas. Setujui agar akun aktif.</p>
+      <div class="row"><input id="addMail" placeholder="email@contoh.com" maxlength="120"><input id="addName" placeholder="Nama (opsional)" maxlength="80"><button class="btn s" id="addBtn">Tambah (aktif)</button></div>
+      <div id="uMsg"></div><ul class="list" id="userList"></ul></div>
+    <div class="card" style="margin-top:20px"><h2 style="font-size:18px">Log Aktivitas</h2><p class="sub" id="adminStat"></p>
+      <div style="overflow-x:auto"><table><thead><tr><th>Waktu</th><th>Pengguna</th><th>Tema</th><th>Status</th></tr></thead><tbody id="logBody"></tbody></table></div></div>
   </section>
 </main>
 <footer>&copy; 2026 Pusat Pelatihan Kelautan dan Perikanan - BPPSDM KKP</footer>
@@ -91,7 +119,7 @@ footer{text-align:center;color:var(--mut);font-size:12px;padding:24px}
 <script>
 const $ = id => document.getElementById(id);
 // ISI DUA NILAI INI
-const API_URL = 'https://script.google.com/macros/s/AKfycbw4dVZO6AwJqd2DgMRpUIsSVA_P3uHWkkbYGEOjgklo1PK_acn5x_Lw9IfxD6NmvK9FDg/exec';
+const API_URL = 'https://script.google.com/macros/s/AKfycbwXfsrhS5l7iVewpZmyjMAHv40E54_Wk2ghYVRI4-JLUDnd2YQmGboBTWln_bCShSztgg/exec';
 const CLIENT_ID = '1031026601937-3e28h0s2si4b5ab3vr0bjq0ffho7h7u9.apps.googleusercontent.com';
 let idToken = ''; // hanya di memori, tidak disimpan di browser
 // Body string = "simple request" (tanpa preflight CORS); Apps Script membalas JSON
@@ -104,41 +132,104 @@ const el = (tag, text, cls) => { const e = document.createElement(tag); if (text
 const show = (id, on) => $(id).classList.toggle('hide', !on);
 const note = (id, text, cls) => { const b = $(id); b.replaceChildren(); if (text) b.appendChild(el('div', text, 'msg ' + cls)); };
 const fail = e => (e && e.message) || 'Gagal terhubung ke server.';
-let loaded = {};
+let loaded = {}, me = null, curTitle = '', timer;
 
 function fill(id, items) { $(id).replaceChildren(...items.map(v => { const o = el('option', v); o.value = v; return o; })); }
 
 function view(v) {
-  ['gen', 'kmap', 'admin'].forEach(k => show('v-' + k, k === v));
+  ['home', 'gen', 'hist', 'kmap', 'admin'].forEach(k => show('v-' + k, k === v));
   document.querySelectorAll('.menu button').forEach(b => b.classList.toggle('on', b.dataset.v === v));
   if (v === 'kmap' && !loaded.kmap) loadKmap();
+  if (v === 'hist') loadHist();
   if (v === 'admin') loadAdmin();
 }
 
 async function init() {
-  show("login", false); show("boot", true);
+  show('loginBox', false); show('boot', true);
   try {
     const r = await call('getSession');
-    show('boot', false);
-    if (!r.ok) { $('deniedMsg').textContent = r.message; show('denied', true); return; }
-    const s = r.data;
-    $('who').textContent = s.email + ' (' + s.role + ')';
-    fill('field', s.fields); fill('target', s.targets); fill('lang', s.langs);
-    show('adminBtn', s.role === 'admin'); show('menu', true);
-    view('gen');
+    show('boot', false); show('v-home', false);
+    if (!r.ok) { $('deniedMsg').textContent = r.message; return show('denied', true); }
+    me = r.data;
+    if (me.status === 'belum') { $('regMail').textContent = me.email; return show('v-reg', true); }
+    if (me.status === 'menunggu') return show('v-pend', true);
+    if (me.status !== 'aktif') { $('deniedMsg').textContent = 'Akun Anda dinonaktifkan. Hubungi admin.'; return show('denied', true); }
+    $('who').textContent = me.email + ' (' + me.role + ')';
+    fill('field', me.fields); fill('target', me.targets); fill('lang', me.langs);
+    show('adminBtn', me.role === 'admin'); show('menu', true); show('startBtn', true); view('home');
   } catch (e) { show('boot', false); $('deniedMsg').textContent = fail(e); show('denied', true); }
+}
+
+// Progress bar: ESTIMASI berbasis waktu (server tidak mengirim progres nyata)
+const STAGES = [[10, 'Menyusun judul dan abstrak'], [30, 'Menulis pendahuluan'], [50, 'Menyusun metode dan hasil'], [70, 'Menulis pembahasan'], [85, 'Mengumpulkan 20+ referensi APA 7th'], [94, 'Menyelesaikan naskah']];
+function startProg() {
+  show('prog', true); const t0 = Date.now(); $('barFill').style.width = '5%';
+  timer = setInterval(() => {
+    const s = Math.round((Date.now() - t0) / 1000), i = Math.min(STAGES.length - 1, Math.floor(s / 12));
+    $('barFill').style.width = STAGES[i][0] + '%';
+    $('progTxt').textContent = STAGES[i][1] + '... ' + s + ' dtk (perkiraan 1-2 menit, jangan tutup halaman)';
+  }, 1000);
+}
+function stopProg(ok) {
+  clearInterval(timer);
+  if (ok) { $('barFill').style.width = '100%'; $('progTxt').textContent = 'Selesai.'; } else show('prog', false);
 }
 
 async function generate() {
   const theme = $('theme').value.trim();
   if (theme.length < 10) return note('genMsg', 'Tema minimal 10 karakter.', 'err');
-  $('genBtn').disabled = true; note('genMsg', 'AI sedang menyusun artikel...', 'ok'); $('out').value = '';
+  $('genBtn').disabled = true; note('genMsg', '', ''); $('out').value = ''; startProg();
   try {
     const r = await call('generatePaper', { theme, field: $('field').value, target: $('target').value, lang: $('lang').value });
-    if (r.ok) { $('out').value = r.data; note('genMsg', 'Naskah berhasil dibuat.', 'ok'); }
-    else note('genMsg', r.message, 'err');
-  } catch (e) { note('genMsg', fail(e), 'err'); }
+    if (r.ok) { $('out').value = r.data; curTitle = theme; stopProg(true); note('genMsg', 'Naskah berhasil dibuat dan tersimpan di Riwayat. Verifikasi referensi sebelum dipakai.', 'ok'); }
+    else { stopProg(false); note('genMsg', r.message, 'err'); }
+  } catch (e) { stopProg(false); note('genMsg', fail(e), 'err'); }
   $('genBtn').disabled = false;
+}
+
+// Markdown -> HTML aman (di-escape dulu) untuk ekspor
+const esc = s => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+const inl = s => esc(s).replace(/\*\*(.+?)\*\*/g, '<b>$1</b>').replace(/\*(.+?)\*/g, '<i>$1</i>');
+function mdToHtml(md) {
+  let out = '', refs = false, list = false;
+  md.split('\n').forEach(l => {
+    l = l.trimEnd(); let m;
+    if (list && !/^\s*[-*]\s+/.test(l)) { out += '</ul>'; list = false; }
+    if ((m = l.match(/^(#{1,4})\s+(.*)/))) { refs = /referen|daftar pustaka/i.test(m[2]); out += '<h' + m[1].length + '>' + inl(m[2]) + '</h' + m[1].length + '>'; }
+    else if ((m = l.match(/^\s*[-*]\s+(.*)/))) { if (!list) { out += '<ul>'; list = true; } out += '<li>' + inl(m[1]) + '</li>'; }
+    else if (l.trim()) out += '<p' + (refs ? ' class="ref"' : '') + '>' + inl(l) + '</p>';
+  });
+  return out + (list ? '</ul>' : '');
+}
+const docHtml = () => '<html><head><meta charset="utf-8"><title>' + esc(curTitle || 'Naskah') + '</title><style>body{font-family:"Times New Roman",serif;font-size:12pt;line-height:1.5;text-align:justify}h1,h2,h3{font-family:Arial,sans-serif;color:#0B2545}p.ref{margin-left:1.27cm;text-indent:-1.27cm}</style></head><body>' + mdToHtml($('out').value) + '</body></html>';
+function exportWord() {
+  if (!$('out').value) return note('genMsg', 'Belum ada naskah.', 'err');
+  const a = el('a'); a.href = URL.createObjectURL(new Blob(['\ufeff' + docHtml()], { type: 'application/msword' }));
+  a.download = 'Naskah_PuslatKP.doc'; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(a.href);
+}
+function exportPdf() { // cetak -> pilih "Simpan sebagai PDF"
+  if (!$('out').value) return note('genMsg', 'Belum ada naskah.', 'err');
+  const f = el('iframe'); f.style.cssText = 'position:fixed;width:0;height:0;border:0'; document.body.appendChild(f);
+  f.onload = () => { f.contentWindow.focus(); f.contentWindow.print(); setTimeout(() => f.remove(), 60000); };
+  f.srcdoc = docHtml();
+}
+
+async function loadHist() {
+  const ul = $('histList'); ul.replaceChildren(el('li', 'Memuat...'));
+  try {
+    const r = await call('listHistory');
+    if (!r.ok) return ul.replaceChildren(el('li', r.message));
+    if (!r.data.length) return ul.replaceChildren(el('li', 'Belum ada naskah.'));
+    ul.replaceChildren(...r.data.map(d => {
+      const li = el('li'), b = el('button', 'Buka', 'btn s');
+      b.onclick = async () => {
+        const x = await call('getPaper', d.id);
+        if (!x.ok) return note('genMsg', x.message, 'err');
+        $('out').value = x.data.isi; curTitle = x.data.tema; note('genMsg', '', ''); show('prog', false); view('gen');
+      };
+      li.append(el('span', d.waktu + '  |  ' + d.tema), b); return li;
+    }));
+  } catch (e) { ul.replaceChildren(el('li', fail(e))); }
 }
 
 async function loadKmap() {
@@ -156,16 +247,47 @@ async function loadKmap() {
   } catch (e) { box.replaceChildren(el('div', fail(e), 'msg err')); }
 }
 
+async function loadUsers() {
+  try {
+    const r = await call('adminListUsers');
+    if (!r.ok) return note('uMsg', r.message, 'err');
+    r.data.sort((x, y) => (x.status === 'menunggu' ? 0 : 1) - (y.status === 'menunggu' ? 0 : 1));
+    $('userList').replaceChildren(...r.data.map(u => {
+      const li = el('li'), act = el('span');
+      const mk = (t, cls, role, st) => {
+        const b = el('button', t, 'btn s ' + cls); b.style.marginLeft = '4px';
+        b.onclick = async () => { const x = await call('adminSetUser', u.email, role, st); note('uMsg', x.ok ? 'Tersimpan.' : x.message, x.ok ? 'ok' : 'err'); loadUsers(); };
+        return b;
+      };
+      act.append(u.status === 'aktif' ? mk('Nonaktifkan', 'd', u.role, 'nonaktif') : mk('Setujui', 'g', u.role, 'aktif'),
+                 mk(u.role === 'admin' ? 'Jadikan user' : 'Jadikan admin', '', u.role === 'admin' ? 'user' : 'admin', u.status));
+      li.append(el('span', (u.nama || '-') + ' | ' + u.email + ' | ' + u.role + ' | ' + u.status), act); return li;
+    }));
+  } catch (e) { note('uMsg', fail(e), 'err'); }
+}
+
 async function loadAdmin() {
+  loadUsers();
   try {
     const r = await call('getAdminData');
     if (!r.ok) return ($('adminStat').textContent = r.message);
-    $('adminStat').textContent = 'Total naskah dibuat: ' + r.data.total + ' (menampilkan 50 terbaru)';
+    $('adminStat').textContent = 'Total naskah dibuat: ' + r.data.total + ' (50 log terbaru)';
     $('logBody').replaceChildren(...r.data.logs.map(l => { const tr = el('tr'); [l.waktu, l.email, l.tema, l.status].forEach(v => tr.appendChild(el('td', v))); return tr; }));
   } catch (e) { $('adminStat').textContent = fail(e); }
 }
 
 $('genBtn').onclick = generate;
+$('docBtn').onclick = exportWord; $('pdfBtn').onclick = exportPdf; $('startBtn').onclick = () => view('gen');
+$('regBtn').onclick = async () => {
+  $('regBtn').disabled = true;
+  try { const r = await call('registerSelf', $('regName').value); if (r.ok) { show('v-reg', false); init(); } else note('regMsg', r.message, 'err'); }
+  catch (e) { note('regMsg', fail(e), 'err'); }
+  $('regBtn').disabled = false;
+};
+$('addBtn').onclick = async () => {
+  try { const r = await call('adminAddUser', $('addMail').value, $('addName').value); note('uMsg', r.ok ? 'User ditambahkan (aktif).' : r.message, r.ok ? 'ok' : 'err'); if (r.ok) { $('addMail').value = ''; $('addName').value = ''; loadUsers(); } }
+  catch (e) { note('uMsg', fail(e), 'err'); }
+};
 document.querySelectorAll('.menu button').forEach(b => b.onclick = () => view(b.dataset.v));
 $('copyBtn').onclick = async () => {
   if (!$('out').value) return note('genMsg', 'Belum ada naskah.', 'err');
