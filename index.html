@@ -115,18 +115,20 @@ footer{text-align:center;color:var(--mut);font-size:12px;padding:24px}
       <div style="overflow-x:auto"><table><thead><tr><th>Waktu</th><th>Pengguna</th><th>Tema</th><th>Status</th></tr></thead><tbody id="logBody"></tbody></table></div></div>
   </section>
 </main>
-<footer>&copy; 2026 Pusat Pelatihan Kelautan dan Perikanan - BPPSDM KKP</br>Dani Saepuloh</footer>
+<footer>&copy; 2026 Pusat Pelatihan Kelautan dan Perikanan - BPPSDM KKP</footer>
 
 <script>
 const $ = id => document.getElementById(id);
 // ISI DUA NILAI INI
-const API_URL = 'https://script.google.com/macros/s/AKfycbwXfsrhS5l7iVewpZmyjMAHv40E54_Wk2ghYVRI4-JLUDnd2YQmGboBTWln_bCShSztgg/exec';
+const API_URL = 'https://script.google.com/macros/s/AKfycbw9_gDYRzxkh3QZ8Yc4bxZyY-OFFENEdhy7qZP-EIMZvAnDZR3VWIADM-Qp5OJN4AFBpQ/exec';
 const CLIENT_ID = '1031026601937-3e28h0s2si4b5ab3vr0bjq0ffho7h7u9.apps.googleusercontent.com';
 let idToken = ''; // hanya di memori, tidak disimpan di browser
 // Body string = "simple request" (tanpa preflight CORS); Apps Script membalas JSON
 const call = async (fn, ...args) => {
   const r = await fetch(API_URL, { method: 'POST', body: JSON.stringify({ fn, args, token: idToken }) });
-  return r.json();
+  const t = await r.text();
+  try { return JSON.parse(t); }
+  catch (e) { throw new Error('Server tidak mengembalikan JSON. Cek API_URL (harus berakhiran /exec), akses deployment "Anyone", dan pastikan sudah deploy versi terbaru.'); }
 };
 // Buat elemen dengan textContent (anti-XSS: tidak pernah memakai innerHTML untuk data)
 const el = (tag, text, cls) => { const e = document.createElement(tag); if (text != null) e.textContent = text; if (cls) e.className = cls; return e; };
