@@ -222,7 +222,7 @@
                         <label class="block text-sm font-bold mb-1.5 text-slate-700">Bidang Fokus Kelautan & Perikanan</label>
                         <select id="paperField" class="w-full border border-slate-200 bg-slate-50/50 rounded-2xl p-3 sm:p-3.5 text-sm focus:ring-2 focus:ring-cyan-500 focus:outline-none transition">
                             <option value="Budidaya Ikan & Perikanan Darat">Budidaya Ikan & Perikanan Darat</option>
-                            <option value="Pemberdayaan Masyarakat Pesisir & Penyuluhan">Pemberdayaan Masyarakat Pesisir & Penyuluhan</option>
+                            <option value="Pemberdayaan Masyarakat Pesisir">Pemberdayaan Masyarakat Pesisir</option>
                             <option value="Teknologi Penangkapan & Alat Tangkap">Teknologi Penangkapan & Alat Tangkap</option>
                             <option value="Pengolahan & Keamanan Hasil Perikanan">Pengolahan & Keamanan Hasil Perikanan</option>
                             <option value="Konservasi Ekosistem Laut & Pesisir">Konservasi Ekosistem Laut & Pesisir</option>
@@ -295,7 +295,7 @@
             <div class="mb-8 border-b border-slate-200 pb-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                 <div>
                     <h2 class="text-2xl sm:text-3xl font-black text-slate-900">Knowledge Mapping Kepakaran KP</h2>
-                    <p class="text-slate-600 text-sm mt-1">Grafik kepakaran nasional dan sebaran topik riset penyuluh kelautan di seluruh Indonesia.</p>
+                    <p class="text-slate-600 text-sm mt-1">Grafik kepakaran nasional dan sebaran topik riset kelautan di seluruh Indonesia.</p>
                 </div>
                 <div class="flex space-x-2 bg-slate-100 p-1.5 rounded-2xl overflow-x-auto w-full sm:w-auto">
                     <button onclick="filterKnowledge('all')" class="px-4 py-2 rounded-xl text-xs font-bold bg-white text-azure shadow-sm transition whitespace-nowrap">Semua Bidang</button>
@@ -383,7 +383,7 @@
                         <thead>
                             <tr class="bg-slate-100 text-slate-700 text-[10px] sm:text-xs font-bold uppercase tracking-wider">
                                 <th class="p-3.5 rounded-l-2xl">Waktu</th>
-                                <th class="p-3.5">Penyuluh / Pengguna</th>
+                                <th class="p-3.5">Pengguna</th>
                                 <th class="p-3.5">Tema Penelitian</th>
                                 <th class="p-3.5 rounded-r-2xl">Aksi</th>
                             </tr>
@@ -444,7 +444,7 @@
     <footer class="bg-slate-950 text-slate-400 py-10 sm:py-12 text-center text-[10px] sm:text-xs border-t border-slate-800">
         <div class="max-w-7xl mx-auto px-4 space-y-2">
             <p class="font-bold text-slate-300">&copy; 2026 Pusat Pelatihan Kelautan dan Perikanan (Puslat KP) - BPPSDM KKP.</p>
-            <p class="text-[9px] sm:text-[11px] text-slate-500 max-w-lg mx-auto">Integrasi Gemini 3 Flash AI untuk Eksternalisasi Pengetahuan Tasit Penyuluh Perikanan & Pemenuhan Standar Publikasi Jurnal Ilmiah SINTA.</p>
+            <p class="text-[9px] sm:text-[11px] text-slate-500 max-w-lg mx-auto">Integrasi Gemini 3 Flash AI untuk Eksternalisasi Pengetahuan Tasit Pegawai Kementerian Kelautan dan Perikanan & Pemenuhan Standar Publikasi Jurnal Ilmiah SINTA.</p>
         </div>
     </footer>
 
@@ -661,7 +661,7 @@ Kementerian Kelautan dan Perikanan. (2025). *Renstra BPPSDM KP*. Jakarta: KKP Pr
         function appendAdminLog(theme) {
             const tableBody = document.getElementById('adminLogsTable');
             const now = new Date().toISOString().slice(0, 19).replace('T', ' ');
-            const userEmail = currentUser ? currentUser.email : 'guest.penyuluh@kkp.go.id';
+            const userEmail = currentUser ? currentUser.email : 'guest@kkp.go.id';
             
             const newRow = document.createElement('tr');
             newRow.innerHTML = `
