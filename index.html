@@ -56,6 +56,7 @@ footer{text-align:center;color:var(--mut);font-size:12px;padding:24px}
     <button data-v="admin" id="adminBtn" class="hide">Admin</button>
     <span class="who" id="who"></span>
   </div>
+<button class="btn s hide" id="outBtn" style="background:#FEE2E2;color:#991B1B">Keluar</button>
 </nav>
 
 <main>
@@ -114,7 +115,7 @@ footer{text-align:center;color:var(--mut);font-size:12px;padding:24px}
       <div style="overflow-x:auto"><table><thead><tr><th>Waktu</th><th>Pengguna</th><th>Tema</th><th>Status</th></tr></thead><tbody id="logBody"></tbody></table></div></div>
   </section>
 </main>
-<footer>&copy; 2026 Pusat Pelatihan Kelautan dan Perikanan - BPPSDM KKP</footer>
+<footer>&copy; 2026 Pusat Pelatihan Kelautan dan Perikanan - BPPSDM KKP</br>Dani Saepuloh</footer>
 
 <script>
 const $ = id => document.getElementById(id);
@@ -148,7 +149,7 @@ async function init() {
   show('loginBox', false); show('boot', true);
   try {
     const r = await call('getSession');
-    show('boot', false); show('v-home', false);
+    show('boot', false); show('v-home', false); show('outBtn', true);
     if (!r.ok) { $('deniedMsg').textContent = r.message; return show('denied', true); }
     me = r.data;
     if (me.status === 'belum') { $('regMail').textContent = me.email; return show('v-reg', true); }
@@ -277,6 +278,7 @@ async function loadAdmin() {
 }
 
 $('genBtn').onclick = generate;
+$('outBtn').onclick = () => { try { google.accounts.id.disableAutoSelect(); } catch (e) {} idToken = ''; me = null; location.reload(); };
 $('docBtn').onclick = exportWord; $('pdfBtn').onclick = exportPdf; $('startBtn').onclick = () => view('gen');
 $('regBtn').onclick = async () => {
   $('regBtn').disabled = true;
