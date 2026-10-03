@@ -51,8 +51,7 @@ footer{text-align:center;color:var(--mut);font-size:12px;padding:24px}
   <div class="menu hide" id="menu">
     <button data-v="home" class="on">Beranda</button>
     <button data-v="gen">Generator</button>
-    <button data-v="hist">Riwayat</button>
-    <button data-v="kmap">Knowledge Map</button>
+    <button data-v="hist">Riwayat</button>    
     <button data-v="admin" id="adminBtn" class="hide">Admin</button>
     <span class="who" id="who"></span>
   </div>
@@ -101,11 +100,6 @@ footer{text-align:center;color:var(--mut);font-size:12px;padding:24px}
   </section>
 
   <section id="v-hist" class="card hide"><h2>Riwayat Naskah</h2><p class="sub">30 naskah terakhir milik akun Anda.</p><ul class="list" id="histList"></ul></section>
-
-  <section id="v-kmap" class="hide">
-    <h2>Knowledge Map Kepakaran KP</h2><p class="sub">Data dikelola admin melalui sheet "Knowledge".</p>
-    <div class="g3" id="kmapList"></div>
-  </section>
 
   <section id="v-admin" class="hide">
     <div class="card"><h2>Manajemen User</h2><p class="sub">User dengan status "menunggu" tampil paling atas. Setujui agar akun aktif.</p>
@@ -233,21 +227,6 @@ async function loadHist() {
       li.append(el('span', d.waktu + '  |  ' + d.tema), b); return li;
     }));
   } catch (e) { ul.replaceChildren(el('li', fail(e))); }
-}
-
-async function loadKmap() {
-  const box = $('kmapList'); box.replaceChildren(el('p', 'Memuat...'));
-  try {
-    const r = await call('listKnowledge');
-    if (!r.ok) return box.replaceChildren(el('div', r.message, 'msg err'));
-    loaded.kmap = true;
-    if (!r.data.length) return box.replaceChildren(el('p', 'Belum ada data kepakaran.'));
-    box.replaceChildren(...r.data.map(d => {
-      const c = el('div', null, 'card');
-      c.append(el('span', d.bidang, 'tag'), el('h3', d.topik), el('p', d.ringkasan, 'sub'), el('small', d.pakar + ' - ' + d.wilayah));
-      return c;
-    }));
-  } catch (e) { box.replaceChildren(el('div', fail(e), 'msg err')); }
 }
 
 async function loadUsers() {
