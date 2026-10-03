@@ -51,7 +51,7 @@ footer{text-align:center;color:var(--mut);font-size:12px;padding:24px}
   <div class="menu hide" id="menu">
     <button data-v="home" class="on">Beranda</button>
     <button data-v="gen">Generator</button>
-    <button data-v="hist">Riwayat</button>    
+    <button data-v="hist">Riwayat</button>
     <button data-v="admin" id="adminBtn" class="hide">Admin</button>
     <span class="who" id="who"></span>
   </div>
@@ -109,12 +109,12 @@ footer{text-align:center;color:var(--mut);font-size:12px;padding:24px}
       <div style="overflow-x:auto"><table><thead><tr><th>Waktu</th><th>Pengguna</th><th>Tema</th><th>Status</th></tr></thead><tbody id="logBody"></tbody></table></div></div>
   </section>
 </main>
-<footer>&copy; 2026 Pusat Pelatihan Kelautan dan Perikanan - BPPSDM KKP</br>Dani Saepuloh</footer>
+<footer>&copy; 2026 Pusat Pelatihan Kelautan dan Perikanan - BPPSDM KKP </br>Dani Saepuloh</footer>
 
 <script>
 const $ = id => document.getElementById(id);
 // ISI DUA NILAI INI
-const API_URL = 'https://script.google.com/macros/s/AKfycbyGql-b0FkxP_IpjTr0H3ONEK7aeXcrdFnu_l0nhlxAVtzxuInKDqnPnzRvPE6hB0OC/exec';
+const API_URL = 'https://script.google.com/macros/s/AKfycbzSG_B1nNFyml6Nc2h7V9R-Pi-rLxuHomwWWQlPizTXxOuBPLfQGLTLxq5szHhArKE/exec';
 const CLIENT_ID = '122465061777-jq35c6hp1f5rf23upaijulldc0t8aej8.apps.googleusercontent.com';
 let idToken = ''; // hanya di memori, tidak disimpan di browser
 // Body string = "simple request" (tanpa preflight CORS); Apps Script membalas JSON
@@ -134,9 +134,8 @@ let loaded = {}, me = null, curTitle = '', timer;
 function fill(id, items) { $(id).replaceChildren(...items.map(v => { const o = el('option', v); o.value = v; return o; })); }
 
 function view(v) {
-  ['home', 'gen', 'hist', 'kmap', 'admin'].forEach(k => show('v-' + k, k === v));
+  ['home', 'gen', 'hist', 'admin'].forEach(k => show('v-' + k, k === v));
   document.querySelectorAll('.menu button').forEach(b => b.classList.toggle('on', b.dataset.v === v));
-  if (v === 'kmap' && !loaded.kmap) loadKmap();
   if (v === 'hist') loadHist();
   if (v === 'admin') loadAdmin();
 }
